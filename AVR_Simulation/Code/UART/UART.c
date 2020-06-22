@@ -6,14 +6,13 @@
 
 #include "KSC_UART.h"
 
-volatile unsigned char _data;
-
 
 int main(){
 	// Baud rate = 57600 bps (f = 8MHz) -> UBRRL = 8
 	USART_Init(8);
-	
-	sei(); // set bit I cho phep ngat toan cuc
+
+	USART_Transmit_String("Hello World\r\n");
+
 	while(1){
 		//for(char i = 32; i < 128; i++){
 		//	USART_Transmit(i);
@@ -22,15 +21,15 @@ int main(){
 
 		//USART_Transmit(USART_Receive);
 		//_delay_ms(100);
-		USART_Receive();
-		_delay_ms(100);
+		unsigned char data = USART_Receive();
+		//_delay_ms(10);
+		USART_Transmit(data);
+		USART_Transmit('\r');
+		USART_Transmit('\n');
+		_delay_ms(10);
 	}
 			
 	return 0;
 }
 
-// Trinh phuc vu ngat USART hoan tat nhan
-ISR(SIG_UART_RECV){
-	_data = UDR;
-	USART_Transmit(_data);
-}
+
